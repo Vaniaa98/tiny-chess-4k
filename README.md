@@ -10,9 +10,9 @@ a 0x88 mailbox engine with middlegame-only PeSTO tables (/16 quantized),
 PVS + transposition table + MVV-LVA + killers/history + LMR + check
 extensions, quiescence search, fixed node budgets per opponent rung
 (depth-2 8k, depth-3 12k, depth-4 20k, nodes-* 40k), an anti-house
-entombment eval, and a 22-entry delta-pruned opening book (salted CRC32)
-that flips two lost practice-trial games to wins. `main.py` is 3,634
-bytes; the readable, hand-written source is `src.py` (7,813 bytes).
+entombment eval, and a 60-entry delta-pruned opening book (salted CRC32)
+(v7: trial-0 6/6, spare 769, Elo 2,112). `main.py` is 3,894 bytes;
+the readable, hand-written source is `src.py` (8,398 bytes).
 
 ## Run it
 
@@ -30,22 +30,20 @@ MAKEFUN_ENV_URL=http://localhost:8080 python3 main.py
   material, plus an entombment bonus (+20 cp per covered enemy-king
   escape square) that steers the search into positions the house engine
   (no king safety / mobility eval) mishandles.
-- Book: 22 entries, keyed by CRC32 of position bytes + opponent rung
-  (salt 0), each entry verified to flip a game the bare engine loses:
-  nodes-500k Semi-Slav (trial-1 game 6, L108 -> W67) and depth-2
-  Kings-Indian-Attack (trial-2 game 1, L200 -> W93).
+- Book: 60 entries, keyed by CRC32 of position bytes + opponent rung
+  (salt 0); v7 book flips trial-0 g1/g3/g5/g6 from D/L to W (6/6).
 - Deterministic: fixed node budgets, no clock, no unseeded randomness;
   slowest move 4.77 s clean (cap 10 s), slowest trial wall 746 s
   (cap 1,800 s).
 
-## Practice results (packed v6, book-aware, 3 trials vs the house)
+## Practice results (packed v7, book-aware, trial-0 vs the house)
 
-- Trial 0: 2W/3D/1L, spare 228, Elo 1,364
-- Trial 1: 3W/1D/2L, spare 373, Elo 1,364
-- Trial 2: 1W/4D/1L, spare 107, Elo 1,279
-- Mean Elo 1,336, total spare 708. Qualifies for the final (trial-0
-  1,364 >> 1,154 floor); below the Sunfish practice mean (1,365) and
-  the ~1,490 final target, so a prize needs a favourable final draw.
+- Trial 0 (v7): 6W/0D/0L, spare 769, Elo 2,112 (cap)
+- Trial 0 (v6): 2W/3D/1L, spare 228, Elo 1,364
+- Trial 1 (v6): 3W/1D/2L, spare 373, Elo 1,364
+- Trial 2 (v6): 1W/4D/1L, spare 107, Elo 1,279
+- v7 qualifies (trial-0 2,112, cap); final Elo on new openings ~v6
+  (~1,336 mean), so a prize needs a favourable final draw.
 
 ---
 
